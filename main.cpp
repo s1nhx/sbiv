@@ -1,6 +1,5 @@
 #include "main.h"
 
-bool isPluginInitialized = false;
 static unsigned int m_nLastPressedTime;
 
 void __stdcall GameLoop() {
@@ -8,7 +7,6 @@ void __stdcall GameLoop() {
 	if (!initialized) {
 		if (SAMP::pSAMP->LoadAPI()) {
 			initialized = true;
-			isPluginInitialized = true;
 			SAMP::pSAMP->addMessageToChat(-1, "[sbiv] loaded. key: B | vk/@sinhxxx");
 		}
 	}
@@ -23,7 +21,7 @@ void __stdcall GameLoop() {
 			m_nLastPressedTime = CTimer::m_snTimeInMilliseconds;
 			BitStream bs;
 			bs.Write<UINT16>(SAMP::pSAMP->getPlayers()->sLocalPlayerID);
-			SAMP::pSAMP->getRakNet()->EmulRPC(RPC_ScrClearAnimations, &bs);
+			SAMP::pSAMP->getRakNet()->EmulRPC(RPC_ScrClearAnimations, &bs); // clear all animations
 		}
 	}
 }
@@ -34,7 +32,7 @@ int __stdcall DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 	{
 		case DLL_PROCESS_ATTACH: {
 			SAMP::Init();
-			SAMP::CallBacks::pCallBackRegister->RegisterGameLoopCallback(GameLoop);//register gameloop hook
+			SAMP::CallBacks::pCallBackRegister->RegisterGameLoopCallback(GameLoop);
 			break;
 		}
 		case DLL_PROCESS_DETACH: {
